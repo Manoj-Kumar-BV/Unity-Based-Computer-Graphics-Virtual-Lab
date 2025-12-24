@@ -11,6 +11,9 @@ public class InteractiveLineDemo : MonoBehaviour
 {
     private const string SelectedAlgorithmKey = "LineDrawing.SelectedAlgorithm";
 
+    private const string DdaClipName = "DDA Algorithm";
+    private const string BresenhamClipName = "Bresenham's Line Algorithm";
+
 #if UNITY_EDITOR
     private const string DdaClipAssetPath = "Assets/LineDrawingAlgorithm/DDA Algorithm.mp3";
     private const string BresenhamClipAssetPath = "Assets/LineDrawingAlgorithm/Bresenham's Line Algorithm.mp3";
@@ -82,23 +85,54 @@ public class InteractiveLineDemo : MonoBehaviour
 
     private void AutoAssignAudioClipsIfMissing()
     {
-#if UNITY_EDITOR
+        // Priority order:
+        // 1) Inspector assignment (scene/prefab)
+        // 2) Editor-only AssetDatabase (convenience while developing)
+        // 3) Runtime Resources (works in Windows builds)
+
         if (ddaExplanation == null)
         {
+#if UNITY_EDITOR
             ddaExplanation = AssetDatabase.LoadAssetAtPath<AudioClip>(DdaClipAssetPath);
+#endif
+            ddaExplanation ??= LoadClipFromResourcesByName(DdaClipName);
         }
 
         if (bresenhamExplanation == null)
         {
+#if UNITY_EDITOR
             bresenhamExplanation = AssetDatabase.LoadAssetAtPath<AudioClip>(BresenhamClipAssetPath);
+#endif
+            bresenhamExplanation ??= LoadClipFromResourcesByName(BresenhamClipName);
         }
 
         // Reuse the same clip for the all-slopes variant unless a dedicated clip is provided.
-        if (bresenhamAllSlopesExplanation == null)
+        bresenhamAllSlopesExplanation ??= bresenhamExplanation;
+    }
+
+    private static AudioClip LoadClipFromResourcesByName(string clipName)
+    {
+        // Works only if clips are under an Assets/Resources folder.
+        // Fast path: try common subfolders.
+        var clip = Resources.Load<AudioClip>($"LineDrawingAlgorithm/{clipName}");
+        clip ??= Resources.Load<AudioClip>($"Audio/{clipName}");
+        clip ??= Resources.Load<AudioClip>(clipName);
+        if (clip != null)
         {
-            bresenhamAllSlopesExplanation = bresenhamExplanation;
+            return clip;
         }
-#endif
+
+        // Fallback: scan all resources audio clips (fine for this small project).
+        var all = Resources.LoadAll<AudioClip>(string.Empty);
+        for (var i = 0; i < all.Length; i++)
+        {
+            if (all[i] != null && string.Equals(all[i].name, clipName, StringComparison.OrdinalIgnoreCase))
+            {
+                return all[i];
+            }
+        }
+
+        return null;
     }
 
     private void Update()
@@ -145,7 +179,7 @@ public class InteractiveLineDemo : MonoBehaviour
 
         if (audioEnabled && GetExplanationClip(_algorithm) == null)
         {
-            GUI.Label(new Rect(x, y, w, h), "Audio: missing clip for this algorithm");
+            GUI.Label(new Rect(x, y, w, h), "Audio: missing clip (assign in Inspector or put mp3 under Assets/Resources)");
         }
         else
         {
