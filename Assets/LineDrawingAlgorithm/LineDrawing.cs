@@ -6,6 +6,12 @@ public static class LineDrawing
     public static void DDA(float p1x, float p1y, float p2x, float p2y,
             Texture2D texture)
     {
+        DDA(p1x, p1y, p2x, p2y, texture, Color.red);
+    }
+
+    public static void DDA(float p1x, float p1y, float p2x, float p2y,
+            Texture2D texture, Color color)
+    {
         var dx = p2x - p1x;
         var dy = p2y - p1y;
 
@@ -28,7 +34,7 @@ public static class LineDrawing
 
         for (int i = 0; i < step; i++)
         {
-            texture.SetPixel((int)(x), (int)(y), Color.red);
+            texture.SetPixel((int)(x), (int)(y), color);
 
             x += x_incr;
             y += y_incr;
@@ -38,6 +44,12 @@ public static class LineDrawing
     public static void Bresenham(int p1x, int p1y, int p2x, int p2y,
             Texture2D texture)
     {
+        Bresenham(p1x, p1y, p2x, p2y, texture, Color.red);
+    }
+
+    public static void Bresenham(int p1x, int p1y, int p2x, int p2y,
+            Texture2D texture, Color color)
+    {
         var dx = p2x - p1x;
         var dy = p2y - p1y;
         var pk = 2 * dy - dx;
@@ -46,7 +58,7 @@ public static class LineDrawing
 
         for (int x = p1x; x <= p2x; x++)
         {
-            texture.SetPixel(x, y, Color.red);
+            texture.SetPixel(x, y, color);
 
             if (pk > 0)
             {
@@ -58,6 +70,12 @@ public static class LineDrawing
     }
     public static void Bresenham_Low(int p1x, int p1y, int p2x, int p2y,
             Texture2D texture)
+    {
+        Bresenham_Low(p1x, p1y, p2x, p2y, texture, Color.red);
+    }
+
+    public static void Bresenham_Low(int p1x, int p1y, int p2x, int p2y,
+            Texture2D texture, Color color)
     {
         var dx = p2x - p1x;
         var dy = p2y - p1y;
@@ -72,7 +90,7 @@ public static class LineDrawing
 
         for (int x = p1x; x <= p2x; x++)
         {
-            texture.SetPixel(x, y, Color.red);
+            texture.SetPixel(x, y, color);
 
             if (D > 0)
             {
@@ -88,6 +106,12 @@ public static class LineDrawing
     public static void Bresenham_High(int p1x, int p1y, int p2x, int p2y,
         Texture2D texture)
     {
+        Bresenham_High(p1x, p1y, p2x, p2y, texture, Color.red);
+    }
+
+    public static void Bresenham_High(int p1x, int p1y, int p2x, int p2y,
+        Texture2D texture, Color color)
+    {
         var dx = p2x - p1x;
         var dy = p2y - p1y;
         var xi = 1;
@@ -101,7 +125,7 @@ public static class LineDrawing
 
         for (int y = p1y; y <= p2y; y++)
         {
-            texture.SetPixel(x, y, Color.red);
+            texture.SetPixel(x, y, color);
 
             if (D > 0)
             {
