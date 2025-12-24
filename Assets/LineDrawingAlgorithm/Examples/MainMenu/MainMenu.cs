@@ -3,6 +3,10 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    private const string SelectedModuleKey = "VirtualLab.SelectedModule";
+    private const string SelectedLineAlgorithmKey = "LineDrawing.SelectedAlgorithm";
+    private const string SelectedClippingAlgorithmKey = "Clipping.SelectedAlgorithm";
+
     [Header("Scene names (must be added to Build Settings)")]
     [SerializeField] private string interactiveSceneName = "Interactive";
 
@@ -47,28 +51,64 @@ public class MainMenu : MonoBehaviour
         var centerX = (Screen.width - buttonWidth) * 0.5f;
         var y = topPadding;
 
-        GUI.Label(new Rect(centerX, y, buttonWidth, 32f), "Line Drawing Algorithms");
+        GUI.Label(new Rect(centerX, y, buttonWidth, 32f), "Computer Graphics Virtual Lab");
         y += 44f;
+
+        GUI.Label(new Rect(centerX, y, buttonWidth, 32f), "Line Drawing");
+        y += 40f;
 
         if (GUI.Button(new Rect(centerX, y, buttonWidth, buttonHeight), "DDA"))
         {
-            LoadInteractive(LineAlgorithm.DDA);
+            LoadLineDrawing(LineAlgorithm.DDA);
         }
         y += buttonHeight + verticalSpacing;
 
         if (GUI.Button(new Rect(centerX, y, buttonWidth, buttonHeight), "Bresenham"))
         {
-            LoadInteractive(LineAlgorithm.Bresenham);
+            LoadLineDrawing(LineAlgorithm.Bresenham);
         }
         y += buttonHeight + verticalSpacing;
 
         if (GUI.Button(new Rect(centerX, y, buttonWidth, buttonHeight), "Bresenham (All Slopes)"))
         {
-            LoadInteractive(LineAlgorithm.BresenhamFull);
+            LoadLineDrawing(LineAlgorithm.BresenhamFull);
+        }
+
+        y += buttonHeight + 24f;
+        GUI.Label(new Rect(centerX, y, buttonWidth, 32f), "Circle Drawing");
+        y += 40f;
+
+        if (GUI.Button(new Rect(centerX, y, buttonWidth, buttonHeight), "Midpoint Circle"))
+        {
+            LoadModule(VirtualLabModule.CircleDrawing);
+        }
+
+        y += buttonHeight + 24f;
+        GUI.Label(new Rect(centerX, y, buttonWidth, 32f), "Line Clipping");
+        y += 40f;
+
+        if (GUI.Button(new Rect(centerX, y, buttonWidth, buttonHeight), "Cohen–Sutherland"))
+        {
+            LoadClipping(ClippingAlgorithm.CohenSutherland);
+        }
+        y += buttonHeight + verticalSpacing;
+
+        if (GUI.Button(new Rect(centerX, y, buttonWidth, buttonHeight), "Liang–Barsky"))
+        {
+            LoadClipping(ClippingAlgorithm.LiangBarsky);
+        }
+
+        y += buttonHeight + 24f;
+        GUI.Label(new Rect(centerX, y, buttonWidth, 32f), "Polygon Fill");
+        y += 40f;
+
+        if (GUI.Button(new Rect(centerX, y, buttonWidth, buttonHeight), "Scanline Fill"))
+        {
+            LoadModule(VirtualLabModule.PolygonFill);
         }
     }
 
-    private void LoadInteractive(LineAlgorithm algorithm)
+    private void LoadLineDrawing(LineAlgorithm algorithm)
     {
         if (string.IsNullOrWhiteSpace(interactiveSceneName))
         {
@@ -76,7 +116,36 @@ public class MainMenu : MonoBehaviour
             return;
         }
 
-        InteractiveLineDemo.SetSelectedAlgorithm(algorithm);
+        PlayerPrefs.SetInt(SelectedModuleKey, (int)VirtualLabModule.LineDrawing);
+        PlayerPrefs.SetInt(SelectedLineAlgorithmKey, (int)algorithm);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene(interactiveSceneName);
+    }
+
+    private void LoadClipping(ClippingAlgorithm algorithm)
+    {
+        if (string.IsNullOrWhiteSpace(interactiveSceneName))
+        {
+            Debug.LogError("Interactive scene name is empty.");
+            return;
+        }
+
+        PlayerPrefs.SetInt(SelectedModuleKey, (int)VirtualLabModule.LineClipping);
+        PlayerPrefs.SetInt(SelectedClippingAlgorithmKey, (int)algorithm);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene(interactiveSceneName);
+    }
+
+    private void LoadModule(VirtualLabModule module)
+    {
+        if (string.IsNullOrWhiteSpace(interactiveSceneName))
+        {
+            Debug.LogError("Interactive scene name is empty.");
+            return;
+        }
+
+        PlayerPrefs.SetInt(SelectedModuleKey, (int)module);
+        PlayerPrefs.Save();
         SceneManager.LoadScene(interactiveSceneName);
     }
 }

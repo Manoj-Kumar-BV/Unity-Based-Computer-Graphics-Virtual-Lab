@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/LineDrawingAlgorithm/Examples/Opening/Opening.unity
+    guid: 2f07e6aa9a9b4e43b3a7a9a1df2a3f55
+  - enabled: 1
     path: Assets/LineDrawingAlgorithm/Examples/MainMenu/MainMenu.unity
     guid: 6f6d7fb3b0f84b5a9c7e6b1c8d2f3a10
   - enabled: 1

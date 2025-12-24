@@ -5,7 +5,7 @@ using UnityEditor.SceneManagement;
 [InitializeOnLoad]
 public static class PlayModeStartScene
 {
-    private const string MainMenuScenePath = "Assets/LineDrawingAlgorithm/Examples/MainMenu/MainMenu.unity";
+    private const string OpeningScenePath = "Assets/LineDrawingAlgorithm/Examples/Opening/Opening.unity";
 
     static PlayModeStartScene()
     {
@@ -14,7 +14,7 @@ public static class PlayModeStartScene
 
     private static void Configure()
     {
-        var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(MainMenuScenePath);
+        var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(OpeningScenePath);
         if (sceneAsset != null)
         {
             EditorSceneManager.playModeStartScene = sceneAsset;
